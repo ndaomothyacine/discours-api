@@ -2,13 +2,19 @@ from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from datetime import date
 import random
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 import models, schemas
 from database import engine, get_db
 
-models.Base.metadata.create_all(bind=engine)
+try:
+    models.Base.metadata.create_all(bind=engine)
+    logging.info("Tables créées avec succès")
+except Exception as e:
+    logging.error(f"Erreur création tables: {e}")
 
 app = FastAPI(title="Discours API", description="API pour la bibliothèque de discours")
 app.add_middleware(
